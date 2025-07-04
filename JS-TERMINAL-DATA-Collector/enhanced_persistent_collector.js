@@ -15,6 +15,13 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
+// BigInt serialization support
+const JSONStringifyWithBigInt = (obj) => {
+    return JSON.stringify(obj, (key, value) => 
+        typeof value === 'bigint' ? value.toString() : value
+    );
+};
+
 // Import enhancements
 const {
     capturePreciseRugEventTiming,
@@ -361,22 +368,22 @@ class EnhancedPersistentGameCollector {
             
             // Save individual game file
             const gameFile = path.join(fullPath, `game-${gameData.gameId}.json`);
-            fs.writeFileSync(gameFile, JSON.stringify(gameData, null, 2));
+            fs.writeFileSync(gameFile, JSONStringifyWithBigInt(gameData).replace(/"(\d+)":/g, "$1:"));
             
             // Append to hourly stream (for easy analysis)
             const streamFile = path.join(fullPath, 'games-stream.jsonl');
-            fs.appendFileSync(streamFile, JSON.stringify(gameData) + '\n');
+            fs.appendFileSync(streamFile, JSONStringifyWithBigInt(gameData) + '\n');
             
             // Append to master stream (for cross-hour analysis)
             const masterStream = path.join(options.outputDir, 'all-games.jsonl');
-            fs.appendFileSync(masterStream, JSON.stringify(gameData) + '\n');
+            fs.appendFileSync(masterStream, JSONStringifyWithBigInt(gameData) + '\n');
             
             // Save pattern alerts if any detected
             const recentPatterns = this.sequenceTracker.getRecentPatterns();
             if (recentPatterns.length > 0) {
                 const alertsFile = path.join(options.outputDir, 'pattern-alerts', `alerts-${formatFileTimestamp()}.json`);
                 fs.mkdirSync(path.join(options.outputDir, 'pattern-alerts'), { recursive: true });
-                fs.writeFileSync(alertsFile, JSON.stringify(recentPatterns, null, 2));
+                fs.writeFileSync(alertsFile, JSONStringifyWithBigInt(recentPatterns).replace(/"(\d+)":/g, "$1:"));
             }
             
         } catch (error) {
