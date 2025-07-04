@@ -54,7 +54,8 @@ const requiredFiles = [
 const optionalFiles = [
     'collector-enhancements.js',
     '.env',
-    'start-collector.sh'
+    'start-collector.sh',
+    'start-collector.ps1' // Added PowerShell script for Windows compatibility
 ];
 
 requiredFiles.forEach(file => {
