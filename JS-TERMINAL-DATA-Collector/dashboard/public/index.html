@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 PRNG Collection Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 PRNG Collection Dashboard</h1>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Target:</span>
+                    <span class="stat-value">10,000+ Games</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Status:</span>
+                    <span id="system-status" class="stat-value status-unknown">Connecting...</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-grid">
+            <!-- Collection Statistics -->
+            <div class="card stats-card">
+                <h2>📊 Collection Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-number" id="total-games">0</div>
+                        <div class="stat-label">Games Collected</div>
+                        <div class="stat-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="games-progress"></div>
+                            </div>
+                            <span class="progress-text" id="games-progress-text">0%</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="total-files">0</div>
+                        <div class="stat-label">Total Files</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="data-size">0 MB</div>
+                        <div class="stat-label">Data Size</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="collection-rate">0/hr</div>
+                        <div class="stat-label">Collection Rate</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Health -->
+            <div class="card health-card">
+                <h2>🔧 System Health</h2>
+                <div class="health-grid">
+                    <div class="health-item">
+                        <div class="health-label">Collector Process</div>
+                        <div class="health-status" id="collector-status">
+                            <span class="status-indicator" id="collector-indicator"></span>
+                            <span id="collector-text">Unknown</span>
+                        </div>
+                    </div>
+                    <div class="health-item">
+                        <div class="health-label">Process ID</div>
+                        <div class="health-value" id="collector-pid">-</div>
+                    </div>
+                    <div class="health-item">
+                        <div class="health-label">Last Collection</div>
+                        <div class="health-value" id="last-collection">-</div>
+                    </div>
+                    <div class="health-item">
+                        <div class="health-label">Uptime</div>
+                        <div class="health-value" id="uptime">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Process Control -->
+            <div class="card control-card">
+                <h2>🎮 Process Control</h2>
+                <div class="control-buttons">
+                    <button id="start-collector" class="btn btn-success">
+                        <span>▶️ Start Collector</span>
+                    </button>
+                    <button id="stop-collector" class="btn btn-danger">
+                        <span>⏹️ Stop Collector</span>
+                    </button>
+                    <button id="refresh-stats" class="btn btn-secondary">
+                        <span>🔄 Refresh Stats</span>
+                    </button>
+                </div>
+                <div class="control-status" id="control-status"></div>
+            </div>
+
+            <!-- Recent Games -->
+            <div class="card games-card">
+                <h2>🎯 Recent Games</h2>
+                <div class="games-list" id="recent-games">
+                    <div class="loading">Loading recent games...</div>
+                </div>
+            </div>
+
+            <!-- Collection Chart -->
+            <div class="card chart-card">
+                <h2>📈 Collection Progress</h2>
+                <div class="chart-container">
+                    <canvas id="collection-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Live Log -->
+            <div class="card log-card">
+                <h2>📝 Live System Log</h2>
+                <div class="log-controls">
+                    <button id="clear-log" class="btn btn-small">Clear Log</button>
+                    <label>
+                        <input type="checkbox" id="auto-scroll" checked> Auto-scroll
+                    </label>
+                </div>
+                <div class="log-container" id="log-container">
+                    <div class="log-entry system">
+                        <span class="log-time">[--:--:--]</span>
+                        <span class="log-message">Dashboard initializing...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

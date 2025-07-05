@@ -368,7 +368,7 @@ class EnhancedPersistentGameCollector {
             
             // Save individual game file
             const gameFile = path.join(fullPath, `game-${gameData.gameId}.json`);
-            fs.writeFileSync(gameFile, JSONStringifyWithBigInt(gameData));
+            fs.writeFileSync(gameFile, JSONStringifyWithBigInt(gameData).replace(/"(\d+)":/g, "$1:"));
             
             // Append to hourly stream (for easy analysis)
             const streamFile = path.join(fullPath, 'games-stream.jsonl');
@@ -383,7 +383,7 @@ class EnhancedPersistentGameCollector {
             if (recentPatterns.length > 0) {
                 const alertsFile = path.join(options.outputDir, 'pattern-alerts', `alerts-${formatFileTimestamp()}.json`);
                 fs.mkdirSync(path.join(options.outputDir, 'pattern-alerts'), { recursive: true });
-                fs.writeFileSync(alertsFile, JSONStringifyWithBigInt(recentPatterns));
+                fs.writeFileSync(alertsFile, JSONStringifyWithBigInt(recentPatterns).replace(/"(\d+)":/g, "$1:"));
             }
             
         } catch (error) {
